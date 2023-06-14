@@ -1,5 +1,6 @@
 #!/bin/bash
-if test -d Эталон;then rm -r Эталон;mkdir Эталон;else mkdir Эталон;fi
+dir_for_report="Etalon"
+if test -d $dir_for_report;then rm -r $dir_for_report;mkdir $dir_for_report;else mkdir $dir_for_report;fi
 if test -f filelist.txt;then rm filelist.txt;fi
 
 find . -type f -print | sort >> temp.txt
@@ -25,4 +26,4 @@ done
 rm $filelist
 
 echo -e "\n===================================================================================================================================" | tee -a $result_2012_512 $result_2012_256 $result_94 > /dev/null
-mv $result_2012_256 $result_2012_512 $result_94 Эталон
+mv $result_2012_256 $result_2012_512 $result_94 $dir_for_report
