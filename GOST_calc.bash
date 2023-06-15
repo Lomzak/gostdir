@@ -1,5 +1,5 @@
 #!/bin/bash
-dir_for_report="Etalon"
+dir_for_report="gostdir_Etalon"
 if test -d $dir_for_report;then rm -r $dir_for_report;mkdir $dir_for_report;else mkdir $dir_for_report;fi
 
 declare -a file_list GOST_HASH_2012_512 GOST_HASH_2012_256 GOST_HASH_1994_256
@@ -10,7 +10,6 @@ cat << EOF >> "$report"
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <head>
-	
 	<style type="text/css">
 		.table {background-color : white; font-size : 11px;}
 		.tableTop {background-color : #DFDFDF; font-weight : bold;}
@@ -22,13 +21,8 @@ cat << EOF >> "$report"
 </head>
 <body>
 <title>Gostdir REPORT</title>
-<center><caption><BIG><B>ОТЧЁТ</B></BIG></caption></center>
-<center><caption><BIG><B>о фиксации исходного состояния</B></BIG></caption></center>
-<center><caption><BIG><B>_____________________________________________________________________________________________________</B></BIG></caption></center>
-<center><caption><BIG><B>(GOST 34.11-2012(512), GOST 34.11-2012(256),GOST 34.11-94)</B></BIG></caption></center>
-
+<center><caption><BIG><B>ОТЧЁТ<br>о фиксации исходного состояния<br>__________________________________________________________<br>(GOST 34.11-2012(512), GOST 34.11-2012(256),GOST 34.11-94)</B></BIG></caption></center>
 <BR>
-
 <table BORDER=3 width="100%" cellspacing="1" cellpadding="1" style= "BORDER-COLLAPSE: collapse">
 <tr>
 <td class="tableTop" ALIGN=CENTER>№ пп</td>
