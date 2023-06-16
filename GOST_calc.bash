@@ -2,9 +2,14 @@
 dir_for_report="gostdir_Etalon"
 if test -d $dir_for_report;then rm -r $dir_for_report;mkdir $dir_for_report;else mkdir $dir_for_report;fi
 
+#Переменная для проверки версии бинарника
+version="0.1.0"
+
+#Массивы для хранения списка файлов и расчитанных хэшей
 declare -a file_list GOST_HASH_2012_512 GOST_HASH_2012_256 GOST_HASH_1994_256
 readarray file_list < <(find . -type f -print)
 
+#Заголовок html для отчета 
 report="Report.html"
 cat << EOF >> "$report"
 <html>
@@ -23,6 +28,10 @@ cat << EOF >> "$report"
 <title>Gostdir REPORT</title>
 <center><caption><BIG><B>ОТЧЁТ<br>о фиксации исходного состояния<br>__________________________________________________________<br>(GOST 34.11-2012(512), GOST 34.11-2012(256),GOST 34.11-94)</B></BIG></caption></center>
 <BR>
+EOF
+
+#Начало формирования таблицы №1
+cat << EOF >> "$report"
 <table BORDER=3 width="100%" cellspacing="1" cellpadding="1" style= "BORDER-COLLAPSE: collapse">
 <tr>
 <td class="tableTop" ALIGN=CENTER>№ пп</td>
@@ -31,6 +40,7 @@ cat << EOF >> "$report"
 </tr>
 EOF
 
+#Рассчитываем ГОСТ хэш для файлов.
 for var in "${!file_list[@]}"
 do
 GOST_HASH_2012_512[$var]="$(sudo gostsum --gost-2012-512    ${file_list[$var]}| sed -r 's/ .+//')"
@@ -38,6 +48,7 @@ GOST_HASH_2012_256[$var]="$(sudo gostsum --gost-2012        ${file_list[$var]}| 
 GOST_HASH_1994_256[$var]="$(sudo gostsum --gost-94          ${file_list[$var]}| sed -r 's/ .+//')"
 done
 
+ #Записываем в отчет GOST_2012_512
 for var in "${!file_list[@]}"
 do
 list_number=$((var+1))
@@ -51,6 +62,8 @@ echo '</table>' >> $report
 echo '<BR>' >> $report
 echo '<BR>' >> $report
 
+
+#Начало формирования таблицы №2
 cat << EOF >> "$report"
 <table BORDER=3 width="100%" cellspacing="1" cellpadding="1" style= "BORDER-COLLAPSE: collapse">
 <tr>
@@ -60,6 +73,7 @@ cat << EOF >> "$report"
 </tr>
 EOF
 
+#Записываем в отчет GOST_2012_256
 for var in "${!file_list[@]}"
 do
 list_number=$((var+1))
@@ -73,6 +87,8 @@ echo '</table>' >> $report
 echo '<BR>' >> $report
 echo '<BR>' >> $report
 
+
+#Начало формирования таблицы №3
 cat << EOF >> "$report"
 <table BORDER=3 width="100%" cellspacing="1" cellpadding="1" style= "BORDER-COLLAPSE: collapse">
 <tr>
@@ -82,6 +98,7 @@ cat << EOF >> "$report"
 </tr>
 EOF
 
+#Записываем в отчет GOST_1994_256
 for var in "${!file_list[@]}"
 do
 list_number=$((var+1))
@@ -93,5 +110,5 @@ echo '</tr>' >> $report
 done
 echo '</table>' >> $report
 
-
+#Перемещение отчета в отдельную папку
 mv $report $dir_for_report
