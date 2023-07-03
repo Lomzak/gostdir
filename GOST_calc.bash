@@ -1,15 +1,21 @@
 #!/bin/bash
+
+#Название директории для файла отчета 
 dir_for_report="gostdir_Etalon"
+#Проверка наличия директории для отчета, очистка от старой версии
 if test -d $dir_for_report;then rm -r $dir_for_report;mkdir $dir_for_report;else mkdir $dir_for_report;fi
 
 #Переменная для проверки версии бинарника
 version="0.1.0"
-
+#Путь для поиска файлов для расчета хэш-сумм
+Path_to_calc="$PWD"
 #Массивы для хранения списка файлов и расчитанных хэшей
 declare -a file_list GOST_HASH_2012_512 GOST_HASH_2012_256 GOST_HASH_1994_256
-readarray file_list < <(find . -type f -print)
 
-#Заголовок html для отчета 
+#Формирование списка для фиксации
+readarray file_list < <(find $Path_to_calc -type f -print)
+
+#Заголовок HTML отчета 
 report="Report.html"
 cat << EOF >> "$report"
 <html>
@@ -26,7 +32,10 @@ cat << EOF >> "$report"
 </head>
 <body>
 <title>Gostdir REPORT</title>
-<center><caption><BIG><B>ОТЧЁТ<br>о фиксации исходного состояния<br>__________________________________________________________<br>(GOST 34.11-2012(512), GOST 34.11-2012(256),GOST 34.11-94)</B></BIG></caption></center>
+<center><caption><BIG><B>ОТЧЁТ<br>
+о фиксации исходного состояния<br>Расчет хэш-сумм произведен с использованием утилиты gostsum
+<br>__________________________________________________________<br>
+(GOST 34.11-2012(512), GOST 34.11-2012(256),GOST 34.11-94)</B></BIG></caption></center>
 <BR>
 EOF
 
@@ -40,7 +49,7 @@ cat << EOF >> "$report"
 </tr>
 EOF
 
-#Рассчитываем ГОСТ хэш для файлов.
+#Вычисление ГОСТ-хэш для файлов.
 for var in "${!file_list[@]}"
 do
 GOST_HASH_2012_512[$var]="$(sudo gostsum --gost-2012-512    ${file_list[$var]}| sed -r 's/ .+//')"
@@ -51,9 +60,8 @@ done
  #Записываем в отчет GOST_2012_512
 for var in "${!file_list[@]}"
 do
-list_number=$((var+1))
 echo '<tr>' >> $report
-echo "<td ALIGN=CENTER>$(echo "$list_number")</td>" >> "$report"
+echo "<td ALIGN=CENTER>$(echo "$((var+1))")</td>" >> "$report"
 echo "<td class="filename" >$(echo "${file_list[$var]}")</td>" >> $report
 echo "<td class="hash" ALIGN=CENTER>$(echo "${GOST_HASH_2012_512[$var]}")</td>" >> $report
 echo '</tr>' >> $report
@@ -76,9 +84,8 @@ EOF
 #Записываем в отчет GOST_2012_256
 for var in "${!file_list[@]}"
 do
-list_number=$((var+1))
 echo '<tr>' >> $report
-echo "<td ALIGN=CENTER>$(echo "$list_number")</td>" >> "$report"
+echo "<td ALIGN=CENTER>$(echo "$((var+1))")</td>" >> "$report"
 echo "<td class="filename" >$(echo "${file_list[$var]}")</td>" >> $report
 echo "<td class="hash" ALIGN=CENTER>$(echo "${GOST_HASH_2012_256[$var]}")</td>" >> $report
 echo '</tr>' >> $report
@@ -101,9 +108,8 @@ EOF
 #Записываем в отчет GOST_1994_256
 for var in "${!file_list[@]}"
 do
-list_number=$((var+1))
 echo '<tr>' >> $report
-echo "<td ALIGN=CENTER>$(echo "$list_number")</td>" >> "$report"
+echo "<td ALIGN=CENTER>$(echo "$((var+1))")</td>" >> "$report"
 echo "<td class="filename" >$(echo "${file_list[$var]}")</td>" >> $report
 echo "<td class="hash" ALIGN=CENTER>$(echo "${GOST_HASH_1994_256[$var]}")</td>" >> $report
 echo '</tr>' >> $report
